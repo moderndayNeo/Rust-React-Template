@@ -1,19 +1,8 @@
+mod routes;
+
 use actix_cors::Cors;
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, web};
-
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().json(serde_json::json!({
-        "message": "Hello world!"
-    }))
-}
-
-#[get("/hello/{name}")]
-async fn hello_name(name: web::Path<String>) -> impl Responder {
-    HttpResponse::Ok().json(serde_json::json!({
-        "message": format!("Hello {}!", name)
-    }))
-}
+use actix_web::{App, HttpServer};
+use routes::{hello, hello_name};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
