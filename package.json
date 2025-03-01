@@ -1,0 +1,26 @@
+{
+  "name": "rust-react-full-stack",
+  "version": "1.0.0",
+  "description": "This is a template for a full-stack Rust & React project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "both": "concurrently \"npm run start-server\" \"npm run start-client\"",
+    "start-server": "cd rust-backend && cargo run",
+    "start-client": "cd react-vite-frontend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moderndayNeo/Rust-BE-React-Vite-TypeScript-FE-Template-to-be-reused-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moderndayNeo/Rust-BE-React-Vite-TypeScript-FE-Template-to-be-reused-/issues"
+  },
+  "homepage": "https://github.com/moderndayNeo/Rust-BE-React-Vite-TypeScript-FE-Template-to-be-reused-#readme",
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

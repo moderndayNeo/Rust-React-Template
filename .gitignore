@@ -1,1 +1,6 @@
 /target
+
+**/*.env
+
+node_modules
+react-vite-frontend/node_modules
