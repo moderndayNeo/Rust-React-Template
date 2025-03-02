@@ -1,7 +1,3 @@
-// Make the rust router use cors to accept FE requests ✅
-// Make the rust router return a json response and display it on the FE. ✅
-// Use the new 'use' syntax. ✅
-
 /// <reference types="vite/client" />
 
 import React from 'react';
@@ -34,8 +30,11 @@ const DataComponent: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <div>
-      <h1>Welcome to the Vite + React + TypeScript App!</h1>
+    <div className="p-14">
+      <h1 className="text-4xl text-blue-700">
+        Welcome to the Vite + React + TypeScript App!
+      </h1>
+
       <ErrorBoundary fallback={<div>Error loading data!</div>}>
         <Suspense fallback={<div>Loading...</div>}>
           <DataComponent />
