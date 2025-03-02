@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, Responder, get, web};
+use actix_web::{HttpResponse, Responder, get, post, web};
 use serde::{Deserialize, Serialize};
 
 #[get("/")]
@@ -64,3 +64,35 @@ async fn ai_tools() -> impl Responder {
         "tools": tools
     }))
 }
+
+#[post("/ai-tools")]
+async fn create_ai_tool(tool: web::Json<AiTool>) -> impl Responder {
+    println!("Successfully created new AI tool: {}", tool.name);
+
+    HttpResponse::Created().json(serde_json::json!({
+        "tool": tool.into_inner()
+    }))
+}
+
+// Each endpoint needs to be registered using .service()
+// The macro attributes (#[get], #[post], etc.) define the HTTP method and path
+// Use web::Json<T> for handling JSON payloads
+// Use web::Path<T> for path parameters
+
+// #[get("/ai-tools/{id}")]
+// async fn get_ai_tool(id: web::Path<String>) -> impl Responder {
+//     // Implement get single tool logic
+//     HttpResponse::Ok().json(serde_json::json!({ "message": "Get single tool" }))
+// }
+
+// #[put("/ai-tools/{id}")]
+// async fn update_ai_tool(id: web::Path<String>, tool: web::Json<AiTool>) -> impl Responder {
+//     // Implement update logic
+//     HttpResponse::Ok().json(serde_json::json!({ "message": "Update tool" }))
+// }
+
+// #[delete("/ai-tools/{id}")]
+// async fn delete_ai_tool(id: web::Path<String>) -> impl Responder {
+//     // Implement delete logic
+//     HttpResponse::Ok().json(serde_json::json!({ "message": "Delete tool" }))
+// }
