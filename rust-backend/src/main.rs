@@ -2,7 +2,7 @@ mod routes;
 
 use actix_cors::Cors;
 use actix_web::{App, HttpServer};
-use routes::{hello, hello_name};
+use routes::{ai_tools, hello, hello_name};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -12,7 +12,11 @@ async fn main() -> std::io::Result<()> {
             .allow_any_method()
             .allow_any_header();
 
-        App::new().wrap(cors).service(hello).service(hello_name)
+        App::new()
+            .wrap(cors)
+            .service(hello)
+            .service(hello_name)
+            .service(ai_tools)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
