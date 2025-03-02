@@ -7,6 +7,7 @@
 import React from 'react';
 import { use, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { AiTools } from './AiTools';
 
 async function fetchData() {
   const response = await fetch(import.meta.env.VITE_BACKEND_URL);
@@ -38,6 +39,7 @@ const App: React.FC = () => {
       <ErrorBoundary fallback={<div>Error loading data!</div>}>
         <Suspense fallback={<div>Loading...</div>}>
           <DataComponent />
+          <AiTools />
         </Suspense>
       </ErrorBoundary>
     </div>
