@@ -56,7 +56,7 @@ export function AiTools() {
           onClick={() => {
             alert('Hello');
           }}
-          className='cursor-pointer'
+          className="cursor-pointer"
         >
           Click me
         </Button>
