@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 import React from 'react';
-import { use, Suspense } from 'react';
+import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { AiTools } from './AiTools';
 
