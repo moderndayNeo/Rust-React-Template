@@ -1,4 +1,4 @@
-/target
+rust-backend/target
 
 **/*.env
 

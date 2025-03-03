@@ -1,5 +1,9 @@
-use actix_web::{HttpResponse, Responder, get, post, web};
-use serde::{Deserialize, Serialize};
+use crate::models::AiTool;
+use actix_web::{HttpResponse, Responder, get, web};
+use diesel::{
+    prelude::*,
+    r2d2::{self, ConnectionManager},
+};
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -15,64 +19,63 @@ async fn hello_name(name: web::Path<String>) -> impl Responder {
     }))
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AiTool {
-    name: String,
-    company: String,
-    description: String,
-    image: Option<String>,
-    monthly_price_usd: f64,
-}
-
-fn get_ai_tools() -> Vec<AiTool> {
-    vec![
-        AiTool {
-            name: String::from("sora"),
-            company: String::from("OpenAI"),
-            description: String::from("Video generation tool"),
-            image: None,
-            monthly_price_usd: 20.0,
-        },
-        AiTool {
-            name: String::from("GPT_4o"),
-            company: String::from("OpenAI"),
-            description: String::from("Text generation LLM"),
-            image: None,
-            monthly_price_usd: 20.0,
-        },
-        AiTool {
-            name: String::from("claude-3_5-sonnet"),
-            company: String::from("Anthropic"),
-            description: String::from("Text generation LLM"),
-            image: None,
-            monthly_price_usd: 20.0,
-        },
-        AiTool {
-            name: String::from("bolt.new"),
-            company: String::from("Bolt"),
-            description: String::from("Full-stack code generation tool"),
-            image: None,
-            monthly_price_usd: 50.0,
-        },
-    ]
-}
+type DbPool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
 #[get("/ai-tools")]
-async fn ai_tools() -> impl Responder {
-    let tools = get_ai_tools();
+async fn get_ai_tools(pool: web::Data<DbPool>) -> impl Responder {
+    use crate::schema::ai_tools::dsl::*;
+
+    let mut conn = pool.get().expect("Error getting connection from pool");
+
+    let tools = ai_tools
+        .load::<AiTool>(&mut conn)
+        .expect("Error loading AI tools");
+
     HttpResponse::Ok().json(serde_json::json!({
         "tools": tools
     }))
 }
 
-#[post("/ai-tools")]
-async fn create_ai_tool(tool: web::Json<AiTool>) -> impl Responder {
-    println!("Successfully created new AI tool: {}", tool.name);
+// #[get("/houses")]
+// async fn index(pool: web::Data<DbPool>) -> Result<HttpResponse, Error> {
+//     let houses = web::block(move || {
+//         let mut conn = pool.get()?; // <------------
+//         find_all(&mut conn)         // <------------
+//     })
+//     .await?
+//     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    HttpResponse::Created().json(serde_json::json!({
-        "tool": tool.into_inner()
-    }))
-}
+//     Ok(HttpResponse::Ok().json(houses))
+// }
+
+// fn find_all(conn: &mut PgConnection) -> Result<Vec<House>, DbError> {
+//                 // ^^^ <------------
+//     use crate::schemas::common::houses::houses::dsl::*;
+
+//     let items = houses.load::<House>(conn)?; // <------------
+//     Ok(items)
+// }
+
+// #[post("/ai-tools")]
+// async fn create_ai_tool(
+//     tool: web::Json<AiTool>,
+//     pool: web::Data<SqliteConnection>,
+// ) -> impl Responder {
+//     use crate::schema::ai_tools;
+
+//     let new_tool = tool.into_inner();
+
+//     diesel::insert_into(ai_tools::table)
+//         .values(&new_tool)
+//         .execute(&**pool)
+//         .expect("Error inserting new AI tool");
+
+//     println!("Successfully created new AI tool: {}", new_tool.name);
+
+//     HttpResponse::Created().json(serde_json::json!({
+//         "tool": new_tool
+//     }))
+// }
 
 // Each endpoint needs to be registered using .service()
 // The macro attributes (#[get], #[post], etc.) define the HTTP method and path
@@ -95,4 +98,19 @@ async fn create_ai_tool(tool: web::Json<AiTool>) -> impl Responder {
 // async fn delete_ai_tool(id: web::Path<String>) -> impl Responder {
 //     // Implement delete logic
 //     HttpResponse::Ok().json(serde_json::json!({ "message": "Delete tool" }))
+// }
+
+// #[post("/ai-tools")]
+// async fn create_ai_tool(
+//     tool: web::Json<AiTool>,
+//     db: web::Data<SqliteConnection>,
+// ) -> Result<impl Responder, Error> {
+//     // Store in database
+//     let stored_tool = db.insert_ai_tool(&tool).await?;
+
+//     println!("Successfully created new AI tool: {}", stored_tool.name);
+
+//     Ok(HttpResponse::Created().json(serde_json::json!({
+//         "tool": stored_tool
+//     })))
 // }

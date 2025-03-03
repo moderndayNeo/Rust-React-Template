@@ -9,3 +9,7 @@ actix-web = "4.3"
 serde = { version = "1.0.218", features = ["derive"] }
 serde_json = "1.0.139"
 tokio = { version = "1.28", features = ["full"] }
+diesel = { version = "2.2.7", features = ["sqlite", "r2d2", "returning_clauses_for_sqlite_3_35"] } # r2d2 is for creating a connection pool
+libsqlite3-sys = { version = "0.30", features = ["bundled"] }
+dotenv = "0.15.0"
+env_logger = "0.11.6"
