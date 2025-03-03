@@ -1,4 +1,4 @@
-use crate::models::{AiTool, NewAiTool};
+use crate::models::{AiTool, AiToolFilters, NewAiTool};
 use actix_web::{HttpResponse, Responder, delete, get, post, put, web};
 use diesel::{
     prelude::*,
@@ -79,6 +79,33 @@ async fn delete_ai_tool(id_to_delete: web::Path<i32>, pool: web::Data<DbPool>) -
             HttpResponse::InternalServerError().json(serde_json::json!({"error": e.to_string()}))
         }
     }
+}
+
+#[get("/ai-tools/filter")]
+async fn get_ai_tools_by_params(
+    query: web::Query<AiToolFilters>,
+    pool: web::Data<DbPool>,
+) -> impl Responder {
+    use crate::schema::ai_tools::dsl::*;
+
+    let mut conn = pool.get().expect("Error getting connection from pool");
+    let mut query_builder = ai_tools.into_boxed();
+
+    if let Some(company_filter) = &query.company {
+        query_builder = query_builder.filter(company.eq(company_filter));
+    }
+
+    if let Some(name_filter) = &query.name {
+        query_builder = query_builder.filter(name.eq(name_filter));
+    }
+
+    let tools = query_builder
+        .load::<AiTool>(&mut conn)
+        .expect("Error loading AI tools");
+
+    HttpResponse::Ok().json(serde_json::json!({
+        "tools": tools
+    }))
 }
 
 #[get("/ai-tools/{id}")]

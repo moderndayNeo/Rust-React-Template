@@ -42,3 +42,9 @@ pub struct MartialArt {
     pub country_of_origin: String,
     pub monthly_price_usd: f32,
 }
+
+#[derive(Deserialize)]
+pub struct AiToolFilters {
+    pub company: Option<String>,
+    pub name: Option<String>,
+}

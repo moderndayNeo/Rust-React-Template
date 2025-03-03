@@ -5,7 +5,8 @@ use actix_web::{App, HttpServer, web};
 use db_utils::establish_connection;
 use dotenv::dotenv;
 use routes::{
-    create_ai_tool, delete_ai_tool, get_ai_tool, get_ai_tools, hello, hello_name, update_ai_tool,
+    create_ai_tool, delete_ai_tool, get_ai_tool, get_ai_tools, get_ai_tools_by_params, hello,
+    hello_name, update_ai_tool,
 };
 
 pub mod db_utils;
@@ -31,6 +32,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_ai_tools)
             .service(create_ai_tool)
             .service(delete_ai_tool)
+            .service(get_ai_tools_by_params) // This service must go before get_ai_tool because otherwise it would be interpreted as a request for a specific tool with the ID "by_params"
             .service(get_ai_tool)
             .service(update_ai_tool)
     })
