@@ -81,11 +81,21 @@ async fn delete_ai_tool(id_to_delete: web::Path<i32>, pool: web::Data<DbPool>) -
     }
 }
 
-// #[get("/ai-tools/{id}")]
-// async fn get_ai_tool(id: web::Path<String>) -> impl Responder {
-//     // Implement get single tool logic
-//     HttpResponse::Ok().json(serde_json::json!({ "message": "Get single tool" }))
-// }
+#[get("/ai-tools/{id}")]
+async fn get_ai_tool(tool_id: web::Path<i32>, pool: web::Data<DbPool>) -> impl Responder {
+    use crate::schema::ai_tools::dsl::*;
+    let mut conn = pool.get().expect("Error getting connection from pool");
+    let tool_id = tool_id.into_inner();
+    // print the tool_id
+    println!("Tool id: {}", tool_id);
+
+    let result = ai_tools.filter(id.eq(tool_id)).first::<AiTool>(&mut conn);
+
+    match result {
+        Ok(tool) => HttpResponse::Ok().json(serde_json::json!({"tool": tool})),
+        Err(e) => HttpResponse::NotFound().json(serde_json::json!({"error": e.to_string()})),
+    }
+}
 
 // #[put("/ai-tools/{id}")]
 // async fn update_ai_tool(id: web::Path<String>, tool: web::Json<AiTool>) -> impl Responder {

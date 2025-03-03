@@ -4,7 +4,7 @@ use actix_cors::Cors;
 use actix_web::{App, HttpServer, web};
 use db_utils::establish_connection;
 use dotenv::dotenv;
-use routes::{get_ai_tools, hello, hello_name, create_ai_tool, delete_ai_tool};
+use routes::{get_ai_tools, hello, hello_name, create_ai_tool, delete_ai_tool, get_ai_tool};
 
 pub mod db_utils;
 pub mod models;
@@ -29,6 +29,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_ai_tools)
             .service(create_ai_tool)
             .service(delete_ai_tool)
+            .service(get_ai_tool)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
