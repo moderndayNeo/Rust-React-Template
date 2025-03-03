@@ -2,9 +2,9 @@
 
 diesel::table! {
     ai_tools (id) {
-        id -> Nullable<Integer>,
-        name -> Text,
+        id -> Integer,
         company -> Text,
+        name -> Text,
         description -> Text,
         image_url -> Nullable<Text>,
     }
@@ -30,4 +30,8 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(ai_tools, martial_arts, posts,);
+diesel::allow_tables_to_appear_in_same_query!(
+    ai_tools,
+    martial_arts,
+    posts,
+);
