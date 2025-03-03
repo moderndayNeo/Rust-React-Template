@@ -1,5 +1,5 @@
 use crate::models::{AiTool, NewAiTool};
-use actix_web::{HttpResponse, Responder, delete, get, post, web};
+use actix_web::{HttpResponse, Responder, delete, get, post, put, web};
 use diesel::{
     prelude::*,
     r2d2::{self, ConnectionManager},
@@ -87,7 +87,7 @@ async fn get_ai_tool(tool_id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
     let mut conn = pool.get().expect("Error getting connection from pool");
     let tool_id = tool_id.into_inner();
     // print the tool_id
-    println!("Tool id: {}", tool_id);
+    println!("Fetching tool with id: {}", tool_id);
 
     let result = ai_tools.filter(id.eq(tool_id)).first::<AiTool>(&mut conn);
 
@@ -97,8 +97,27 @@ async fn get_ai_tool(tool_id: web::Path<i32>, pool: web::Data<DbPool>) -> impl R
     }
 }
 
-// #[put("/ai-tools/{id}")]
-// async fn update_ai_tool(id: web::Path<String>, tool: web::Json<AiTool>) -> impl Responder {
-//     // Implement update logic
-//     HttpResponse::Ok().json(serde_json::json!({ "message": "Update tool" }))
-// }
+#[put("/ai-tools/{id}")]
+async fn update_ai_tool(
+    tool_id: web::Path<i32>,
+    pool: web::Data<DbPool>,
+    updated_tool: web::Json<AiTool>,
+) -> impl Responder {
+    use crate::schema::ai_tools::dsl::*;
+    let mut conn = pool.get().expect("Error getting connection from pool");
+    let tool_id = tool_id.into_inner();
+    println!("Updating tool with id: {}", tool_id);
+
+    let result = diesel::update(ai_tools.filter(id.eq(tool_id)))
+        .set(updated_tool.into_inner())
+        .execute(&mut conn);
+
+    match result {
+        Ok(_) => {
+            HttpResponse::Ok().json(serde_json::json!({ "message": format!("Tool with id {} updated successfully", tool_id) }))
+        }
+        Err(e) => {
+            HttpResponse::InternalServerError().json(serde_json::json!({ "error": e.to_string() }))
+        }
+    }
+}

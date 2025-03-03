@@ -11,7 +11,7 @@ pub struct Post {
     pub published: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, Queryable, Selectable)]
+#[derive(Debug, Serialize, Deserialize, Queryable, Selectable, AsChangeset)]
 #[diesel(table_name = crate::schema::ai_tools)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct AiTool {
