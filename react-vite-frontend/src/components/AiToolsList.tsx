@@ -1,5 +1,4 @@
 import { use } from 'react';
-import { AiToolForm } from './AiToolForm';
 
 interface AiTool {
   id: string;
@@ -23,13 +22,10 @@ async function fetchData() {
 
 const promise = fetchData();
 
-export function AiTools() {
+export function AiToolsList() {
   const aiToolsData = use(promise);
 
   return (
-    <div>
-      <h3 className="text-2xl font-bold mb-4 text-gray-200">AiTools</h3>
-      <AiToolForm />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {aiToolsData.tools.map((tool: AiTool) => (
           <div key={tool.id} className="border p-4 rounded-lg shadow-md">
@@ -51,6 +47,5 @@ export function AiTools() {
           </div>
         ))}
       </div>
-    </div>
   );
 }
