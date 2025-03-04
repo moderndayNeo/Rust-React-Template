@@ -19,7 +19,7 @@ export function AiToolsList() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {aiToolsData.tools.map((tool: AiTool) => (
-        <AiToolComponent tool={tool} />
+        <AiToolComponent tool={tool} key={tool.id} />
       ))}
     </div>
   );
