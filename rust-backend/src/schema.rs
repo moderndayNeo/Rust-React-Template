@@ -3,8 +3,8 @@
 diesel::table! {
     ai_tools (id) {
         id -> Integer,
-        company -> Text,
         name -> Text,
+        company -> Text,
         description -> Text,
         image_url -> Nullable<Text>,
     }
