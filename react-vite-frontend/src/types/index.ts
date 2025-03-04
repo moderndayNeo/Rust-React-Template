@@ -18,3 +18,11 @@ export type ApiResponse<T> = {
     message: string;
     status: number;
 };
+
+export interface AiTool {
+    id: string;
+    name: string;
+    company: string;
+    description: string;
+    image_url: string | null;
+  }
