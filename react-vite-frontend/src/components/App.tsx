@@ -3,7 +3,7 @@
 import React from 'react';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { AiTools } from './AiTools';
+import { AiToolsContainer } from './AiToolsContainer';
 
 const App: React.FC = () => {
   return (
@@ -14,7 +14,7 @@ const App: React.FC = () => {
 
       <ErrorBoundary fallback={<div>Error loading data!</div>}>
         <Suspense fallback={<div>Loading...</div>}>
-          <AiTools />
+          <AiToolsContainer />
         </Suspense>
       </ErrorBoundary>
     </div>
