@@ -22,7 +22,7 @@ export function AiToolsList() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <Label className="text-gray-200">
-        Filter by name:
+        Filter by name or company:
         <Input
           value={filterString}
           onChange={(e) => setFilterString(e.target.value)}
@@ -30,8 +30,10 @@ export function AiToolsList() {
       </Label>
 
       {aiToolsData.tools
-        .filter((tool: AiTool) =>
-          tool.name.toLowerCase().includes(filterString.toLowerCase())
+        .filter(
+          (tool: AiTool) =>
+            tool.name.toLowerCase().includes(filterString.toLowerCase()) ||
+            tool.company.toLowerCase().includes(filterString.toLowerCase())
         )
         .map((tool: AiTool) => (
           <AiToolComponent tool={tool} key={tool.id} />
