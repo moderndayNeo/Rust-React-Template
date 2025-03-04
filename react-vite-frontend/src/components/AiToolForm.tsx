@@ -13,6 +13,7 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 const toolSchema = z.object({
   name: z
@@ -48,38 +49,41 @@ export function AiToolForm({
   },
   idToUpdate,
 }: AiToolFormProps) {
+  const [error, setError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof toolSchema>>({
     resolver: zodResolver(toolSchema),
     defaultValues,
   });
 
-  function onSubmit(values: z.infer<typeof toolSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof toolSchema>) {
+    try {
+      setError(null);
+      const response =
+        formPurpose === 'create'
+          ? await fetch(import.meta.env.VITE_AI_TOOLS_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(values),
+            })
+          : await fetch(`${import.meta.env.VITE_AI_TOOLS_URL}/${idToUpdate}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: idToUpdate,
+                ...values,
+              }),
+            });
 
-    if (formPurpose === 'create') {
-      fetch(import.meta.env.VITE_AI_TOOLS_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      });
-    } else {
-      // formPurpose is update
-      if (!idToUpdate) {
-        throw new Error('idToUpdate is required for update');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Failed to ${formPurpose} tool: ${errorData.error}`);
       }
-
-      fetch(`${import.meta.env.VITE_AI_TOOLS_URL}/${idToUpdate}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: idToUpdate,
-          ...values,
-        }),
-      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   }
 
@@ -137,6 +141,7 @@ export function AiToolForm({
             </FormItem>
           )}
         />
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
 
         <Button type="submit" variant="secondary" className="mt-4">
           {formPurpose === 'create' ? 'Submit' : 'Update'}

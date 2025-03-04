@@ -44,16 +44,33 @@ async fn create_ai_tool(tool: web::Json<NewAiTool>, pool: web::Data<DbPool>) -> 
 
     let mut conn = pool.get().expect("Error getting connection from pool");
 
-    diesel::insert_into(ai_tools)
+    let result = diesel::insert_into(ai_tools)
         .values(&new_tool)
-        .execute(&mut conn)
-        .expect("Error inserting new AI tool");
+        .execute(&mut conn);
 
-    println!("Successfully created new AI tool: {}", new_tool.name);
+    match result {
+        Ok(_) => {
+            println!("Successfully created new AI tool: {}", new_tool.name);
 
-    HttpResponse::Created().json(serde_json::json!({
-        "tool": new_tool
-    }))
+            HttpResponse::Created().json(serde_json::json!({
+                "tool": new_tool
+            }))
+        }
+        Err(e) => {
+            println!("Error creating new AI tool: {}", e);
+
+            // Check if the error is a unique constraint violation
+            if e.to_string().contains("UNIQUE constraint failed") {
+                return HttpResponse::Conflict().json(serde_json::json!({
+                    "error": "Tool with that name & company already exists"
+                }));
+            }
+
+            HttpResponse::InternalServerError().json(serde_json::json!({
+                "error": e.to_string()
+            }))
+        }
+    }
 }
 
 #[delete("/ai-tools/{id}")]
