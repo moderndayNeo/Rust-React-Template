@@ -20,7 +20,7 @@ export type ApiResponse<T> = {
 };
 
 export interface AiTool {
-    id: string;
+    id: number;
     name: string;
     company: string;
     description: string;

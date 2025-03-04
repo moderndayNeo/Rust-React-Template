@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from './ui/form';
 import { Input } from './ui/input';
+import { cn } from '@/lib/utils';
 
 const toolSchema = z.object({
   name: z
@@ -29,34 +30,64 @@ const toolSchema = z.object({
   image_url: z.string().nullable(),
 });
 
-export function AiToolForm() {
+interface AiToolFormProps {
+  className?: string;
+  defaultValues?: z.infer<typeof toolSchema>;
+  formPurpose: 'create' | 'update';
+  idToUpdate?: number;
+}
+
+export function AiToolForm({
+  className,
+  formPurpose,
+  defaultValues = {
+    name: 'DeepSeek-R6',
+    company: 'DeepSeek',
+    description: 'Locally-hosted AI Tool',
+    image_url: '',
+  },
+  idToUpdate,
+}: AiToolFormProps) {
   const form = useForm<z.infer<typeof toolSchema>>({
     resolver: zodResolver(toolSchema),
-    defaultValues: {
-      name: 'Claude 3.7 Sonnet',
-      company: 'Anthropic',
-      description: 'Text generation LLM',
-      image_url: '',
-    },
+    defaultValues,
   });
 
   function onSubmit(values: z.infer<typeof toolSchema>) {
     console.log(values);
 
-    fetch(import.meta.env.VITE_AI_TOOLS_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(values),
-    });
+    if (formPurpose === 'create') {
+      fetch(import.meta.env.VITE_AI_TOOLS_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+    } else {
+      // formPurpose is update
+      if (!idToUpdate) {
+        throw new Error('idToUpdate is required for update');
+      }
+
+      fetch(`${import.meta.env.VITE_AI_TOOLS_URL}/${idToUpdate}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: idToUpdate,
+          ...values,
+        }),
+      });
+    }
   }
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 text-white mb-4"
+        className={cn(className, 'space-y-8 text-white mb-4')}
       >
         <FormField
           control={form.control}
@@ -108,7 +139,7 @@ export function AiToolForm() {
         />
 
         <Button type="submit" variant="secondary" className="mt-4">
-          Submit
+          {formPurpose === 'create' ? 'Submit' : 'Update'}
         </Button>
       </form>
     </Form>
