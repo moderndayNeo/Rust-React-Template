@@ -62,7 +62,7 @@ async fn delete_ai_tool(id_to_delete: web::Path<i32>, pool: web::Data<DbPool>) -
     let mut conn = pool.get().expect("Error getting connection from pool");
     let tool_id = id_to_delete.into_inner();
     // print the tool_id
-    println!("Tool id: {}", tool_id);
+    println!("Deleting tool id: {}", tool_id);
 
     let result = diesel::delete(ai_tools.filter(id.eq(tool_id))).execute(&mut conn);
 
