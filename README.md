@@ -1,13 +1,19 @@
 # This is a template for a full-stack Rust & React project.
 
+## Overview
+
 - BE: Rust HTTP Server
+  - Actix-web, Serde, Tokio, Diesel, Sqlite
 - FE: React + TypeScript + Vite
+  - TailwindCSS, Shadcn/ui (components), Lucide-react (icons), React-hook-form, Zod (form validation)
 
-Note: Do not edit this template. Instead, whenever you need to create a project, clone this and edit the clone.
+## Important Notes
 
-_Notes_:
+- Do not edit this template. Instead, whenever you need to create a project, clone this and edit the clone.
+- The FE and BE each have their own `.env` files.
 
-- The FE and BE each have their own .env files
+## Updating the DB schema ⬇️
+
 - This project uses Diesel. Diesel is an ORM and query builder for Rust. It's designed to provide a safe and efficient way to interact with databases in Rust.
   https://diesel.rs/guides/getting-started
 
