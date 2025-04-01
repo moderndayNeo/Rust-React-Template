@@ -78,7 +78,7 @@ To run the project, follow these steps:
 5. Start the backend server:
 
    ```sh
-   cargo run
+   cargo run 
    ```
 
 6. The backend server should now be running at `http://localhost:8080`.
