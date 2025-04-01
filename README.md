@@ -12,6 +12,80 @@
 - Do not edit this template. Instead, whenever you need to create a project, clone this and edit the clone.
 - The FE and BE each have their own `.env` files.
 
+---
+
+## Running the Project
+
+To run the project, follow these steps:
+
+#### Frontend Server
+
+1. Navigate to the frontend directory:
+
+   ```sh
+   cd react-vite-frontend
+   ```
+
+2. Set up the environment variables by creating a `.env` file in the `react-vite-frontend` directory with the following content:
+
+   ```
+   VITE_BACKEND_URL=http://localhost:8080/hello/adam
+   VITE_AI_TOOLS_URL=http://localhost:8080/ai-tools
+   ```
+
+3. Install the dependencies:
+
+   ```sh
+   npm install
+   ```
+
+4. Start the development server:
+
+   ```sh
+   npm run dev
+   ```
+
+5. Open your browser and go to `http://localhost:3000` to see the frontend application.
+
+#### Backend Server
+
+1. Navigate to the backend directory:
+
+   ```sh
+   cd rust-backend
+   ```
+
+2. Set up the environment variables by creating a `.env` file in the `rust-backend` directory with the following content:
+
+   ```
+   DATABASE_URL=ai_tools.db
+   RUST_LOG=debug
+   ```
+
+3. Install the required Rust toolchain and dependencies:
+
+   ```sh
+   rustup override set stable
+   cargo install diesel_cli --no-default-features --features sqlite
+   ```
+
+4. Run the database migrations:
+
+   ```sh
+   diesel migration run
+   ```
+
+5. Start the backend server:
+
+   ```sh
+   cargo run
+   ```
+
+6. The backend server should now be running at `http://localhost:8080`.
+
+Now you have both the frontend and backend servers running. You can interact with the application through the frontend interface, which communicates with the backend server.
+
+
 ## Updating the DB schema ⬇️
 
 - This project uses Diesel. Diesel is an ORM and query builder for Rust. It's designed to provide a safe and efficient way to interact with databases in Rust.
@@ -82,3 +156,5 @@
       .load::<AiTool>(&mut conn)
       .expect("Error loading AI tools");
    ```
+
+---
